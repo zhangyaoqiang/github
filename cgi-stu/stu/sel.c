@@ -54,11 +54,11 @@ fclose(fd);
 
 	if (sname[0] == '*')
 	{
-		sprintf(sql, "select sno,sname,sname,address,age,sex,scno from information where status =1");
+		sprintf(sql, "select sno,sname,address,age,sex,scno from information where status =1");
 	}
 	else
 	{
-		sprintf(sql, "select sno,sname,sname,address,age,sex,scno from information where sname = '%s' and status = 1", sname);
+		sprintf(sql, "select sno,sname,address,age,sex,scno from information where sname = '%s' and status = 1", sname);
 	}
 
 
