@@ -5,21 +5,30 @@
 #include <mysql/mysql.h>
 #include "cgic.h"
 
-char * headname = "head.html";
+
 char * footname = "footer.html";
+char * headname ="head.html";
+
 
 int cgiMain()
 {
 
-	FILE * fd;
+FILE * fd;
 
-	char name[32] = "\0";
+	char sname[32] = "\0";
 	char age[16] = "\0";
-	char stuId[32] = "\0";
+	char sno[32] = "\0";
+	char address[32] ="\0";
+	char sex[16] ="\0";
+	char scno[32] ="\0";
+
 	int status = 0;
 	char ch;
 
+
+
 	fprintf(cgiOut, "Content-type:text/html;charset=utf-8\n\n");
+
 	if(!(fd = fopen(headname, "r"))){
 		fprintf(cgiOut, "Cannot open file, %s\n", headname);
 		return -1;
@@ -30,14 +39,32 @@ int cgiMain()
 		fprintf(cgiOut, "%c", ch);
 		ch = fgetc(fd);
 	}
-	fclose(fd);
+fclose(fd);
 
-	status = cgiFormString("name",  name, 32);
+
+	status = cgiFormString("sno",  sno, 32);
 	if (status != cgiFormSuccess)
 	{
-		fprintf(cgiOut, "get name error!\n");
+		fprintf(cgiOut, "get sno error!\n");
 		return 1;
 	}
+
+
+	status = cgiFormString("sname",  sname, 32);
+	if (status != cgiFormSuccess)
+	{
+		fprintf(cgiOut, "get sname error!\n");
+		return 1;
+	}
+
+
+	status = cgiFormString("address",  address, 32);
+	if (status != cgiFormSuccess)
+	{
+		fprintf(cgiOut, "get address error!\n");
+		return 1;
+	}
+
 
 	status = cgiFormString("age",  age, 16);
 	if (status != cgiFormSuccess)
@@ -46,16 +73,25 @@ int cgiMain()
 		return 1;
 	}
 
-	status = cgiFormString("stuId",  stuId, 32);
+
+
+	status = cgiFormString("sex",  sex, 32);
 	if (status != cgiFormSuccess)
 	{
-		fprintf(cgiOut, "get stuId error!\n");
+		fprintf(cgiOut, "get sex error!\n");
+		return 1;
+	}
+
+	status = cgiFormString("scno",  scno, 32);
+	if (status != cgiFormSuccess)
+	{
+		fprintf(cgiOut, "get scno error!\n");
 		return 1;
 	}
 
 	//fprintf(cgiOut, "name = %s, age = %s, stuId = %s\n", name, age, stuId);
 
-	int ret;
+	//int ret;
 	char sql[128] = "\0";
 	MYSQL *db;
 
@@ -78,7 +114,7 @@ int cgiMain()
 
 
 
-	strcpy(sql, "create table stu(id int not null primary key, name varchar(20) not null, age int not null)");
+	/*strcpy(sql, "create table stu(id int not null primary key, name varchar(20) not null, age int not null)");
 	if ((ret = mysql_real_query(db, sql, strlen(sql) + 1)) != 0)
 	{
 		if (ret != 1)
@@ -87,11 +123,12 @@ int cgiMain()
 			mysql_close(db);
 			return -1;
 		}
-	}
+	}*/
 
 
 
-	sprintf(sql, "insert into stu values(%d, '%s', %d)", atoi(stuId), name, atoi(age));
+	sprintf(sql,"insert into information values(%d,'%s','%s',%d,'%s',%d,1)",
+	atoi(sno),sname,address,atoi(age),sex,atoi(scno));
 	if (mysql_real_query(db, sql, strlen(sql) + 1) != 0)
 	{
 		fprintf(cgiOut, "%s\n", mysql_error(db));
@@ -103,7 +140,3 @@ int cgiMain()
 	mysql_close(db);
 	return 0;
 }
-
-    Contact GitHub API Training Shop Blog About
-
-    © 2017 GitHub, Inc. Terms Privacy Security Status Help

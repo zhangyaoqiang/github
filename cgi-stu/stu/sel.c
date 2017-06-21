@@ -5,11 +5,30 @@
 #include <mysql/mysql.h>
 #include "cgic.h"
 
+char * footname = "footer.html";
+char * headname ="head.html";
 
 int cgiMain()
 {
 
+	FILE * fd;
+	int status = 0;
+	char ch;
+
+	char sname[32] = "\0";
+
 	fprintf(cgiOut, "Content-type:text/html;charset=utf-8\n\n");
+	if(!(fd = fopen(headname, "r"))){
+		fprintf(cgiOut, "Cannot open file, %s\n", headname);
+		return -1;
+	}
+	ch = fgetc(fd);
+
+	while(ch != EOF){
+		fprintf(cgiOut, "%c", ch);
+		ch = fgetc(fd);
+	}
+fclose(fd);
 /*	fprintf(cgiOut, "<head><meta charset=\"utf-8\"/><title>查询结果</title>\
 			<style>table {width:400px; margin: 50px auto; border: 1px solid gray; border-collapse: collapse; border-spacing: none; text-align:center;}\
 			tr,td,th{border: 1px solid gray;}\
@@ -20,13 +39,12 @@ int cgiMain()
 		    <link rel=\"stylesheet\" href=\"/stu/public/css/bootstrap.min.css\">\
 		</head>");
 
-	char name[32] = "\0";
-	int status = 0;
 
-	status = cgiFormString("name",  name, 32);
+
+	status = cgiFormString("sname",  sname, 32);
 	if (status != cgiFormSuccess)
 	{
-		fprintf(cgiOut, "get name error!\n");
+		fprintf(cgiOut, "get sname error!\n");
 		return 1;
 	}
 
@@ -34,13 +52,13 @@ int cgiMain()
 	MYSQL *db;
 	char sql[128] = "\0";
 
-	if (name[0] == '*')
+	if (sname[0] == '*')
 	{
-		sprintf(sql, "select * from stu");
+		sprintf(sql, "select sno,sname,sname,address,age,sex,scno from information where status =1");
 	}
 	else
 	{
-		sprintf(sql, "select * from stu where name = '%s'", name);
+		sprintf(sql, "select sno,sname,sname,address,age,sex,scno from information where sname = '%s' and status = 1", sname);
 	}
 
 
